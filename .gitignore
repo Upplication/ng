@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# Transpiled sources
+lib/
+
+# Logs
+npm-debug.log

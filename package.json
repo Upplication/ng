@@ -1,0 +1,25 @@
+{
+  "name": "@upplication/ng",
+  "version": "0.1.0",
+  "description": "ES7 decorators for lazy AngularJS devs",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel src --out-dir lib",
+    "prepublish": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Juan Jose Herrero Barbosa <juanjo.herrero@upplication.com>",
+  "license": "MIT",
+  "dependencies": {
+    "mixwith": "^0.1.1"
+  },
+  "peerDependencies": {
+    "angular": ">=1.5"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-es2016": "^6.22.0",
+    "babel-preset-es2017": "^6.22.0"
+  }
+}
