@@ -8,8 +8,8 @@ export function getInjects(injected) {
 }
 
 export function Inject(...dependencies) {
-    return function(toBeInjected) {
-
+    return function(clazz, name, descriptor) {
+        let toBeInjected = (descriptor || {}).value || clazz
         if (typeof toBeInjected !== 'function')
             throw new TypeError('element to be injected must be a class')
 
