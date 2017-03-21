@@ -3,6 +3,8 @@ import { getInjects } from './Inject'
 import { getInjectableName } from './Injectable'
 import { getDirectiveName, getDirectiveDefinition} from './Directive'
 import { isComponent } from './Component'
+import { isConfig } from './Config'
+import { isRun } from './Run'
 
 export function Module({
 	name,
@@ -57,6 +59,20 @@ export function Module({
 			services.forEach(s => registerInjectable(s))
 			pipes.forEach(p => registerPipe(p))
 			directives.forEach(d => registerDirective(d))
+		}
+
+		let fns = []
+		for (let name of Object.getOwnPropertyNames(moduleController))
+			fns.push(moduleController[name])
+		for (let name of Object.getOwnPropertyNames(moduleController.prototype))
+			fns.push(moduleController.prototype[name])
+
+
+		for (let fn of fns) {
+			if (isConfig(fn))
+				module.config(fn)
+			else if (isRun(fn))
+				module.run(fn)
 		}
 
 		if (typeof moduleController.config === 'function')

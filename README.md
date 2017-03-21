@@ -41,6 +41,8 @@ $ npm install --save-dev babel-cli \
 * [@Directive](#directive)
 * [@Component](#component)
 * [@Module](#module)
+* [@Config](#config)
+* [@Run](#run)
 * [@$apply](#apply)
 
 ### @Injectable
@@ -256,6 +258,7 @@ executed on module config phase.
 If the decorated class provides a static `run()` method, that method will be
 executed on module run phase.
 
+#### Example
 ```js
 @Module({
     name: 'app',
@@ -280,6 +283,48 @@ export class MyApp {
 
     static run() {
         console.log('Running!')
+    }
+}
+```
+
+
+### @Config
+```
+@Config()
+```
+
+Allows to declare a function inside a class decorated with `@Module` as a
+config step that must be run through `angular.config`. Usual angular policies
+about injecting providers apply as usual here.
+
+#### Example
+
+```js
+@Module({ /*...*/ })
+class MyClass() {
+    @Config()
+    @Inject('$apiProvider')
+    configApi($apiProvider) { /*...*/ }
+}
+```
+
+### @Run
+```
+@Run()
+```
+
+Allows to declare a function inside a class decorated with `@Module` as a
+run step that must be run through `angular.run`.
+
+#### Example
+
+```js
+@Module({ /*...*/ })
+class MyClass() {
+    @Run()
+    @Inject('heroAp')
+    sayHello(heroApi) {
+        console.log('Hello :)')
     }
 }
 ```
