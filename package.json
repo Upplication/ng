@@ -11,9 +11,6 @@
   },
   "author": "Juan Jose Herrero Barbosa <juanjo.herrero@upplication.com>",
   "license": "MIT",
-  "dependencies": {
-    "mixwith": "^0.1.1"
-  },
   "peerDependencies": {
     "angular": ">=1.5"
   },

@@ -8,4 +8,3 @@ export { Run } from './decorators/Run'
 export { Module } from './decorators/Module'
 
 export { $apply } from './helpers/Apply'
-export { mix as Mix, Mixin } from 'mixwith'
