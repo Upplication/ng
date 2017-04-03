@@ -1,6 +1,8 @@
 # @upplication/ng
 _AngularJS, but with decorators_
 
+[![NPM Version][npm-image]][npm-url]
+
 ## Installation
 ```
 $ npm install --save angular @upplication/ng
@@ -410,3 +412,10 @@ a lock for the action  `inviteRequest` is active. If the lock is enabled the
 function call will do nothing. If the lock was not enabled, it will be enabled
 (preventing future calls from running) and the actual function will be invoked
 and will release the lock at the end of such invocation.
+
+[npm-image]: https://img.shields.io/npm/v/@upplication/ng.svg
+[npm-url]: https://npmjs.org/package/@upplication/ng
+[travis-image]: https://img.shields.io/travis/upplication/ng/master.svg
+[travis-url]:  https://travis-ci.org/upplication/ng
+[coveralls-image]: https://img.shields.io/coveralls/upplication/ng/master.svg
+[coveralls-url]: https://coveralls.io/r/upplication/ng?branch=master
