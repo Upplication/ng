@@ -8,3 +8,4 @@ export { Run } from './decorators/Run'
 export { Module } from './decorators/Module'
 
 export { $apply } from './helpers/Apply'
+export { actionLock, isActionLocked } from './helpers/ActionLock'

@@ -14,10 +14,10 @@ using [babel](https://babeljs.io/) alongside
 **Install babel**
 ```
 $ npm install --save-dev babel-cli \
-	babel-preset-es2015 \
-	babel-preset-es2016 \
-	babel-preset-es2017 \
-	babel-plugin-transform-decorators
+    babel-preset-es2015 \
+    babel-preset-es2016 \
+    babel-preset-es2017 \
+    babel-plugin-transform-decorators
 ```
 **.babelrc**
 ```json
@@ -44,6 +44,7 @@ $ npm install --save-dev babel-cli \
 * [@Config](#config)
 * [@Run](#run)
 * [@$apply](#apply)
+* [@actionLock](#actionLock)
 
 ### @Injectable
 ```js
@@ -126,10 +127,10 @@ angular
 ### @Directive
 ```js
 @Directive({
-	selector: string,
-	services?: Inectable[],
-	pipes?: Pipe[]
-	directives?: <Directive|Component>[]
+    selector: string,
+    services?: Inectable[],
+    pipes?: Pipe[]
+    directives?: <Directive|Component>[]
 })
 class MyClass() {}
 ```
@@ -190,10 +191,10 @@ angular
 ### @Component
 ```js
 @Component({
-	selector: string,
-	services?: Inectable[],
-	pipes?: Pipe[]
-	directives?: <Directive|Component>[]
+    selector: string,
+    services?: Inectable[],
+    pipes?: Pipe[]
+    directives?: <Directive|Component>[]
 })
 class MyClass() {}
 ```
@@ -228,10 +229,10 @@ export class HelloWorldComponent { ... }
 ### @Module
 ```js
 @Module({
-	name: string,
-	services?: Inectable[],
-	pipes?: Pipe[]
-	directives?: <Directive|Component>[]
+    name: string,
+    services?: Inectable[],
+    pipes?: Pipe[]
+    directives?: <Directive|Component>[]
 })
 class MyClass() {}
 ```
@@ -248,9 +249,9 @@ exposed and the module name itself as follows:
 * **pipes**: Array of `@Pipe` decorated classes.  to be bundled on this
     module
 * **directives**: Array of `@Directive` or `@Component` decorated classes to be
-	bundled in this module
+    bundled in this module
 * **requires**: Array of `angular.module`-s or `angular.module` names that this
-	module requires to work.
+    module requires to work.
 
 If the decorated class provides a static `config()` method, that method will be
 executed on module config phase.
@@ -332,10 +333,10 @@ class MyClass() {
 ### @$apply
 ```js
 class MyClass() {
-	@$apply
-	async myAsyncFn() {
-		// ...
-	}
+    @$apply
+    async myAsyncFn() {
+        // ...
+    }
 }
 ```
 Helper decorator for triggering a `$rootScope.$apply()` after the decorated
@@ -363,3 +364,49 @@ export class HelloWorldComponent {
     }
 }
 ```
+
+### @actionLock
+```js
+class MyClass() {
+    @actionLock('action1')
+    async doStuff() { /* ... */ }
+}
+```
+Helper decorator for setting up interlocks between different controller
+functions. This is specially useful when exposing async controller functions
+that should not be able to be called more than once while the associated
+promise has not been resolved yet. You can use `isActionLocked(...)` afterwards
+to check action status.
+
+#### Example
+```js
+import { Component, $async, actionLock, isActionLocked } from '@upplication/ng'
+
+@Component({
+    selector: 'hello-world',
+    template: `Hello world, I'm {{ $ctrl.name }}`,
+    styles: [],
+    bindings: {
+        name: '<'
+    }
+})
+export class HelloWorldComponent {
+    constructor() {...}
+
+    @actionLock('inviteRequest')
+    async acceptInvite() { /* ... */ }
+
+    @actionLock('inviteRequest')
+    async rejectInvite() { /* ... */ }
+
+    isInviteResponsePending() {
+        return isActionLocked(this, 'inviteRequest')
+    }
+}
+```
+
+In the above code will make calls to `acceptInvite` or `rejectInvite` check if
+a lock for the action  `inviteRequest` is active. If the lock is enabled the
+function call will do nothing. If the lock was not enabled, it will be enabled
+(preventing future calls from running) and the actual function will be invoked
+and will release the lock at the end of such invocation.

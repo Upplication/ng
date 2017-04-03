@@ -80,18 +80,17 @@ const rootScopeApply = findRootScopeAndApply()
  * ```
  */
 export function $apply(target, name, descriptor) {
-
-    let asyncFn = target[name]
+    // Store original fn reference
+    let asyncFn = descriptor.value
     if (typeof asyncFn !== 'function')
         throw new TypeError(`async function must be a function, got ${ typeof asyncFn }`)
-
+    // Warp the real function on an async try catch, with a final apply
     const asyncWrapper = (async function(...args) {
         try { return await (asyncFn.bind(this))(...args) }
         catch(e) { throw e }
         finally { rootScopeApply.next() }
     })
-
-    descriptor = Object.assign({}, descriptor, { value: asyncWrapper })
-    // Object.defineProperty(target, name, descriptor)
+    // Update descriptor values
+    Object.assign(descriptor, { value: asyncWrapper })
     return descriptor
 }
