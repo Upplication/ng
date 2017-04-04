@@ -1,6 +1,6 @@
 {
   "name": "@upplication/ng",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "ES7 decorators for lazy AngularJS devs",
   "repository": "https://github.com/upplication/ng",
   "main": "lib/index.js",
