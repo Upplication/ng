@@ -51,7 +51,7 @@ $ npm install --save-dev babel-cli \
 ### @Injectable
 ```js
 @Injectable(name? : String)
-class MyClass() {}
+class MyClass {}
 ```
 Marks the decorated class as injectable, or in other words, an angular service.
 The name of the service will be the name of the class or the provided name to
@@ -78,7 +78,7 @@ angular
 ### @Inject
 ```js
 @Inject(...dependencies : <String|Injectable>[])
-class MyClass() {}
+class MyClass {}
 ```
 Injects the class with the specified angular services and injectables. This is
 equivalent to adding the `$inject` property to the class or using the array
@@ -134,7 +134,7 @@ angular
     pipes?: Pipe[]
     directives?: <Directive|Component>[]
 })
-class MyClass() {}
+class MyClass {}
 ```
 Registers a new directive with the object passed as argument being the
 [directive definition](https://docs.angularjs.org/guide/directive) and
@@ -198,7 +198,7 @@ angular
     pipes?: Pipe[]
     directives?: <Directive|Component>[]
 })
-class MyClass() {}
+class MyClass {}
 ```
 Registers a new component with the object passed as argument being the
 [component definition](https://docs.angularjs.org/guide/component) and
@@ -236,7 +236,7 @@ export class HelloWorldComponent { ... }
     pipes?: Pipe[]
     directives?: <Directive|Component>[]
 })
-class MyClass() {}
+class MyClass {}
 ```
 Bundles a whole set of classes decorated with previous decorators into
 an actual `angular.module`. Prior to actually declaring the injectables,
@@ -304,7 +304,7 @@ about injecting providers apply as usual here.
 
 ```js
 @Module({ /*...*/ })
-class MyClass() {
+class MyClass {
     @Config()
     @Inject('$apiProvider')
     configApi($apiProvider) { /*...*/ }
@@ -323,7 +323,7 @@ run step that must be run through `angular.run`.
 
 ```js
 @Module({ /*...*/ })
-class MyClass() {
+class MyClass {
     @Run()
     @Inject('heroAp')
     sayHello(heroApi) {
@@ -332,9 +332,33 @@ class MyClass() {
 }
 ```
 
-### @$apply
+### Mix
 ```js
-class MyClass() {
+class MyClass extends Mix(MySuperClass, MyMixin1, MyMixin2) { /*...*/ }
+```
+
+Declare mixins chains and a superclass for mixin generator functions.
+See docs at the [Mixin file](src/helpers/Mixin.js) for detailed information.
+
+#### Example
+```js
+import { Mix, Mixin } from '@upplication/ng'
+
+const MyMixin1 = Mixin(superclass => class extends superclass {
+    /* Awesome Mixin */
+})
+const MyMixin2 = Mixin(superclass => class extends superclass {
+    /* Much more awesome Mixin */
+})
+
+class MyClass1 extends Mix(MyMixin1) { /*...*/ }
+class MyClass2 extends Mix(MyClass1, MyMixin2) { /*...*/ }
+
+```
+
+t### @$apply
+```js
+class MyClass {
     @$apply
     async myAsyncFn() {
         // ...
@@ -369,7 +393,7 @@ export class HelloWorldComponent {
 
 ### @actionLock
 ```js
-class MyClass() {
+class MyClass {
     @actionLock('action1')
     async doStuff() { /* ... */ }
 }

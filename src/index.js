@@ -9,3 +9,4 @@ export { Module } from './decorators/Module'
 
 export { $apply } from './helpers/Apply'
 export { actionLock, isActionLocked } from './helpers/ActionLock'
+export { Mix, Mixin } from './helpers/Mixin'
