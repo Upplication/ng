@@ -43,17 +43,27 @@ function* findRootScopeAndApply() {
     }
 
     let $rootScope = null
+    let $safeApply = () => {
+        if (!$rootScope)
+            return
+        let phase = $rootScope.$$phase
+        let isDigestCyleInProgress = [ '$apply', '$digest' ].includes(phase)
+        // This states should not trigger an apply
+        if (!isDigestCyleInProgress)
+            $rootScope.$apply()
+
+    }
     // Yield here because the first apply will be invoked after injection
     // is resolved. Afterwards the while will take care of yielding $apply
     // executions
     yield ngRoot.injector()
     .invoke([ '$rootScope', rS => {
         $rootScope = rS
-        rS.$apply()
+        $safeApply()
     }])
 
     while (true)
-        yield $rootScope && $rootScope.$apply()
+        yield $safeApply()
 }
 
 const rootScopeApply = findRootScopeAndApply()
