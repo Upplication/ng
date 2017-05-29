@@ -3,15 +3,11 @@ import { isInjectable, getInjectableName } from './Injectable'
 const $INJECT = '$inject'
 const $$INJECT = Symbol('@Inject(...)')
 
-export function getInjects(injected) {
-    return injected[$$INJECT] || []
-}
-
 export function Inject(...dependencies) {
-    return function(clazz, name, descriptor) {
+    return (clazz, name, descriptor) => {
         let toBeInjected = (descriptor || {}).value || clazz
         if (typeof toBeInjected !== 'function')
-            throw new TypeError('element to be injected must be a class')
+            throw new TypeError('element to be injected must be a class or a function')
 
         let dependencyNames = dependencies.map((dep) => {
             if (isInjectable(dep))

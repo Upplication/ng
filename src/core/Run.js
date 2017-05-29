@@ -6,6 +6,18 @@ function markAsRun(fn) {
     })
 }
 
+/**
+ * Registers the given function as a run step in an angularjs module.
+ * @param  {AngularJS.module} module
+ * @param  {function} run - decorated with @{@link Run}
+ * @return {AngularJS.module}
+ */
+export function registerConfig(module, run) {
+    module.run(run)
+    return module
+}
+
+
 export function isRun(fn) {
     return Object.prototype.hasOwnProperty
         .call(fn, $RUN)

@@ -46,12 +46,8 @@ function* findRootScopeAndApply() {
     let $safeApply = () => {
         if (!$rootScope)
             return
-        let phase = $rootScope.$$phase
-        let isDigestCyleInProgress = [ '$apply', '$digest' ].includes(phase)
-        // This states should not trigger an apply
-        if (!isDigestCyleInProgress)
-            $rootScope.$apply()
-
+        // Trigger an on demand apply or use the one in progresss
+        $rootScope.evalAsync(() => {})
     }
     // Yield here because the first apply will be invoked after injection
     // is resolved. Afterwards the while will take care of yielding $apply
