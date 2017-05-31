@@ -3,7 +3,7 @@
   "version": "1.2.1",
   "description": "ES7 decorators for lazy AngularJS devs",
   "repository": "https://github.com/upplication/ng",
-  "main": "lib/index.js",
+  "main": "lib/",
   "scripts": {
     "build": "babel src --out-dir lib",
     "prepublish": "npm run build",

@@ -1,11 +1,11 @@
 // Core functionality
-export { Injectable } from './decorators/Injectable'
-export { Inject } from './decorators/Inject'
+export { Injectable } from './core/Injectable'
+export { Inject } from './core/Inject'
 export { Directive } from './decorators/Directive'
-export { Component } from './decorators/Component'
-export { Config } from './decorators/Config'
-export { Run } from './decorators/Run'
-export { Module } from './decorators/Module'
+export { Component } from './core/Component'
+export { Config } from './core/Config'
+export { Run } from './core/Run'
+export { NgModule } from './core/NgModule'
 
 export { $apply } from './helpers/Apply'
 export { actionLock, isActionLocked } from './helpers/ActionLock'
