@@ -10,7 +10,7 @@ import { element } from 'angular'
  * @return {HTMLElement}
  */
 function findDocumentElement(fn) {
-    const items = document.getElementsByTagName("*")
+    const items = document.getElementsByTagName('*')
     return Array.from(items).find(i => fn(i))
 }
 
@@ -58,7 +58,7 @@ function* findRootScopeAndApply() {
         $safeApply()
     }])
 
-    while (true)
+    for (;;)
         yield $safeApply()
 }
 

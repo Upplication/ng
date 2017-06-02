@@ -22,7 +22,7 @@ function markAsComponent(component, definition) {
  */
 export function isComponent(component) {
     return Object.prototype.hasOwnProperty
-        .call(controller, $COMPONENT)
+        .call(component, $COMPONENT)
 }
 
 /**
@@ -71,7 +71,7 @@ export function Component(def) {
     return (clazz) => {
         // TODO: Do something with the bindings insetad of using it directly
         if (typeof clazz !== 'function')
-            throw new TypeError(`@Component must be applied over a class`)
+            throw new TypeError('@Component must be applied over a class')
         markAsComponent(clazz, def)
     }
 }

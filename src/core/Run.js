@@ -12,7 +12,7 @@ function markAsRun(fn) {
  * @param  {function} run - decorated with @{@link Run}
  * @return {AngularJS.module}
  */
-export function registerConfig(module, run) {
+export function registerRun(module, run) {
     module.run(run)
     return module
 }

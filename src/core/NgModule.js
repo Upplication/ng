@@ -1,4 +1,4 @@
-import { module } from 'angular'
+import angular from 'angular'
 import { isConfig, registerConfig } from './Config'
 import { isRun, registerRun } from './Run'
 import { isInjectable, registerInjectable } from './Injectable'
@@ -13,9 +13,42 @@ import { isPipe, registerPipe } from './Pipe'
 const $ngModuleName = Symbol('@NgModule({ id })')
 
 /**
+ * Property where the NgModule configuration will be stored
+ * @type {Symbol<String>}
+ */
+const $ngModule = Symbol('@NgModule({...})')
+
+/**
  * Any class that has been decorated with @NgModule when declareds
  * @typedef {class} NgModuleDecorated
  */
+
+/**
+ * Returns the object that was passed to @{@link NgModule} when decorating
+ * the given class.
+ *
+ * @protected
+ * @param  {class} clazz
+ * @return {?object}
+ */
+export function getNgComponentDefinition(clazz) {
+    return clazz[$ngModule] || null
+}
+
+/**
+ * Determines if the dependency is provided by the module
+ */
+export function isProvidedBy(dependency, module) {
+    let ngModDef = getNgComponentDefinition(module)
+    if (!ngModDef)
+        return false
+    if (isInjectable(dependency))
+        return ngModDef.providers.includes(dependency)
+    if (isDirective(dependency) || isComponent(dependency) || isPipe(dependency))
+        return ngModDef.exports.includes(dependency)
+    else
+        return false
+}
 
 /**
  * Bridge between the Angular `@NgModule` declaration and the classic AngularJS `angular.module` registration.
@@ -33,17 +66,17 @@ const $ngModuleName = Symbol('@NgModule({ id })')
  * @property {any[]}            moduleDef.exports           - List of components, directives, pipes, services and modules that this module allow
  *                                                          to be used by others that are depending on him.
  */
-export function NgModule({
-    id,
-    providers = [],
-    declarations = [],
-    imports = [],
-    exports = [],
-} = {}) {
-    if (id && typeof id !== 'string')
-        throw new TypeError('NgModule id must be an string')
-    if (id.length == 0)
-        throw new TypeError('NgModule id can\'t be empty')
+export function NgModule(def) {
+    let {
+        id,
+        providers = [],
+        declarations = [],
+        imports = [],
+        exports = [],
+    } = def
+
+    if (id && (typeof id !== 'string' || id.length == 0))
+        throw new TypeError('NgModule id must be an non empty string')
     if (!Array.isArray(providers))
         throw new TypeError('NgModule providers must be an array')
     if (!Array.isArray(declarations))
@@ -124,6 +157,10 @@ export function NgModule({
         Object.defineProperty(moduleClass, $ngModuleName, {
             value: moduleId,
         })
+        // Store the object passed to @NgModule for further use
+        Object.defineProperty(moduleClass, $ngModule, {
+            value: def
+        })
 
         // Map imports to AngularJS require array as follows:
         // - If is a class decorated with @NgModule, use it's internal id
@@ -134,14 +171,14 @@ export function NgModule({
         // Every require should be a string at this point, check it
         requires.forEach((r, idx) => {
             if (!r || typeof r !== 'string')
-                throw new Error(`NgModule ${moduleId}: Could't resolve 'import' at position ${i}`)
+                throw new Error(`NgModule ${moduleId}: Could't resolve 'import' at position ${idx}`)
         })
 
         // Check every provider is valid and is @Inectable decorated, if so add it to the services array
         providers.forEach((p, idx) => {
             if (!p)
                 throw new TypeError(`NgModule ${moduleId}: 'provider' at position ${idx} is not a valid provider`)
-            if (!isInjectableDecorated(p))
+            if (!isInjectable(p))
                 throw new Error(`NgModule ${moduleId}: 'provider' at position ${idx} is not @Injectable`)
             services.push(p)
         })
@@ -150,20 +187,20 @@ export function NgModule({
         declarations.forEach((d, idx) => {
             if (!d)
                 throw new TypeError(`NgModule ${moduleId}: 'declaration' at position ${idx} is not a valid declaration`)
-            if (isDirectiveDecorated(d))
+            if (isDirective(d))
                 directives.push(d)
-            else if (isComponentDecorated(d))
+            else if (isComponent(d))
                 components.push(d)
-            else if (isPipeDecorated(d))
-                pipes.push(d)
+            else if (isPipe(d))
+                filters.push(d)
             else
                 throw new Error(`NgModule ${moduleId}: 'declaration' at position ${idx} is not any of these: @Component, @Directive, @Pipe`)
         })
 
         // Check everything exported by this module is actually declared...
         exports.forEach((e, idx) => {
-            if (!declarations.includes(e))
-                throw new Error(`NgModule ${moduleId}: 'export' at position ${idx} is not available on declarations`)
+            if (!declarations.includes(e) && !imports.find(i => isProvidedBy(e, i)))
+                throw new Error(`NgModule ${moduleId}: export ${e.name || e} at position ${idx} is not available on declarations nor imports`)
         })
 
         // Inspect the module class for config/run steps
@@ -176,10 +213,10 @@ export function NgModule({
         }
 
         let module = angular.module(moduleId, requires)
-        configs.forEach((c) => registrerConfig(module, c))
-        runs.forEach((r) => registrerRun(module, r))
+        configs.forEach((c) => registerConfig(module, c))
+        runs.forEach((r) => registerRun(module, r))
         services.forEach((s) => registerInjectable(module, s))
-        pipes.forEach((p) => registerPipe(module,p))
+        filters.forEach((p) => registerPipe(module,p))
         directives.forEach((d) => registerDirective(module, d))
         components.forEach((c) => registerComponent(module, c))
         return module

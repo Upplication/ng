@@ -1,7 +1,7 @@
 // Core functionality
 export { Injectable } from './core/Injectable'
 export { Inject } from './core/Inject'
-export { Directive } from './decorators/Directive'
+export { Directive } from './core/Directive'
 export { Component } from './core/Component'
 export { Config } from './core/Config'
 export { Run } from './core/Run'

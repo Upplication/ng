@@ -10,12 +10,12 @@ function markAsPipe(clazz, pipeDef) {
  * Any class that has been decorated with @{@link Pipe}.
  * @interface
  */
-class IPipe {}
+export class IPipe {}
 
 /**
  * @interface PipeTransform
  */
-class PipeTransform {
+export class PipeTransform {
     /**
      * Transforms the given input to
      * @abstract
@@ -33,7 +33,7 @@ class PipeTransform {
  */
 export function isPipe(pipe) {
     return Object.prototype.hasOwnProperty
-        .call(pipe, $INJECTABLE)
+        .call(pipe, $PIPE)
 }
 
 /**

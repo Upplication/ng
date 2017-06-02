@@ -3,11 +3,11 @@ import { kebabToCamel } from '../utils/convert-case'
 const $DIRECTIVE = Symbol('@Directive({ ... }')
 
 function isCssClassSelector(s) {
-    return s.test(/^\.[a-z0-9]+$/)
+    return /^\.[a-z0-9\-]+$/.test(s)
 }
 
 function isCssAttributeSelector(s) {
-    return s.test(/^\[[a-z0-9]+\]$/)
+    return /^\[[a-z0-9\-]+\]$/.test(s)
 }
 
 function markAsDirective(controller, declaration) {
@@ -30,7 +30,7 @@ function getDirectiveDefinition(clazz) {
 export function registerDirective(module, directive) {
     let def = getDirectiveDefinition(directive)
     let { selector } = def
-    let name = kebabToCamel(selector.replace(/[^a-z0-9]/g, ''))
+    let name = kebabToCamel(selector.replace(/[^a-z0-9\-]/g, ''))
     let restrict = null
     if (isCssClassSelector(selector))
         restrict = 'C'
@@ -49,8 +49,8 @@ export function registerDirective(module, directive) {
         // Link the $destroy element event to the $onDestroy event of the
         // directive controller.
         link: (...linkArgs) => {
+            let [ , elem, , ctrl ] = linkArgs
             if (typeof ctrl.$onDestroy === 'function') {
-                let [ scope, elem, attrs, ctrl ] = linkArgs
                 elem.on('$destroy', (...args) => ctrl.$onDestroy(...args))
             }
             if (typeof def.link === 'function')
@@ -69,7 +69,7 @@ export function Directive(def) {
 
     return (clazz) => {
         if (typeof clazz !== 'function')
-            throw new TypeError(`@Directive must be applied over a class`)
+            throw new TypeError('@Directive must be applied over a class')
         markAsDirective(clazz, def)
     }
 }

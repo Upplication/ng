@@ -7,10 +7,10 @@ function markAsInjectable(injectable, name) {
 }
 
 /**
- * Any class that has been decorated with 
+ * Any class that has been decorated with @Injectable
  * @interface
  */
-class IInjectable {}
+export class IInjectable {}
 
 /**
  * Determines if the provided argument has been decorated with @{@link Injectable}
@@ -53,9 +53,9 @@ export function registerInjectable(module, injectable) {
  */
 export function Injectable(name) {
     return function(clazz) {
-        if (typeof injectable !== 'function')
+        if (typeof clazz !== 'function')
             throw new TypeError('element to be turned into injectable must be a class')
-        const actualName = name || clazz.name        
+        const actualName = name || clazz.name
         markAsInjectable(clazz, actualName)
     }
 }

@@ -1,6 +1,6 @@
 const ACTION_LOCKS = new WeakMap()
 
-function getActionLocks(ctrl, action) {
+function getActionLocks(ctrl) {
     if (!ACTION_LOCKS.has(ctrl))
         ACTION_LOCKS.set(ctrl, {})
     return ACTION_LOCKS.get(ctrl)

@@ -1,5 +1,5 @@
 import { bootstrap } from 'angular'
 
-export function bootstrapModule(module) {
-	boostrap(document, [ module ])
+export function bootstrapModule(modules) {
+    bootstrap(document, [ ...modules ])
 }
