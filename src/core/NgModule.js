@@ -24,6 +24,18 @@ const $ngModule = Symbol('@NgModule({...})')
  */
 
 /**
+ * Returns the name that was assigned to @{@link NgModule} when decorating
+ * the given class.
+ *
+ * @protected
+ * @param  {class} clazz
+ * @return {?string}
+ */
+export function getNgComponentName(clazz) {
+    return clazz[$ngModuleName] || null
+}
+
+/**
  * Returns the object that was passed to @{@link NgModule} when decorating
  * the given class.
  *
@@ -42,9 +54,10 @@ export function isProvidedBy(dependency, module) {
     let ngModDef = getNgComponentDefinition(module)
     if (!ngModDef)
         return false
-    if (isInjectable(dependency))
+    if (Array.isArray(ngModDef.providers) && isInjectable(dependency))
         return ngModDef.providers.includes(dependency)
-    if (isDirective(dependency) || isComponent(dependency) || isPipe(dependency))
+    if (Array.isArray(ngModDef.exports) &&
+        (isDirective(dependency) || isComponent(dependency) || isPipe(dependency)))
         return ngModDef.exports.includes(dependency)
     else
         return false
@@ -219,6 +232,5 @@ export function NgModule(def) {
         filters.forEach((p) => registerPipe(module,p))
         directives.forEach((d) => registerDirective(module, d))
         components.forEach((c) => registerComponent(module, c))
-        return module
     }
 }
