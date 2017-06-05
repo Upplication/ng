@@ -47,7 +47,7 @@ function* findRootScopeAndApply() {
         if (!$rootScope)
             return
         // Trigger an on demand apply or use the one in progresss
-        $rootScope.evalAsync(() => {})
+        $rootScope.$evalAsync(() => {})
     }
     // Yield here because the first apply will be invoked after injection
     // is resolved. Afterwards the while will take care of yielding $apply

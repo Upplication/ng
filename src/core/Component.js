@@ -32,7 +32,7 @@ export function isComponent(component) {
  * @return {object}
  * @throws {TypeError} If provided class was not decorated with @Component
  */
-function getComponentDefinition(clazz) {
+export function getComponentDefinition(clazz) {
     if (!isComponent(clazz))
         throw new TypeError('Provided argument has not been decorated with @Component')
     return clazz[$COMPONENT]
